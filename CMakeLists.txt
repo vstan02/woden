@@ -11,7 +11,6 @@ set(
 
 set(
     WODEN_SOURCES
-    src/Token.cpp
     src/Scanner.cpp
 )
 
