@@ -17,47 +17,48 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-#ifndef WODEN_TOKEN_HPP
-#define WODEN_TOKEN_HPP
+#ifndef WODEN_HPP
+#define WODEN_HPP
 
 #include "string"
 
 struct Token {
     enum Type {
         // Literals:
-        TOKEN_STRING,
-        TOKEN_INTEGER,
+        STRING,
+        INTEGER,
 
         // Keywords:
-        TOKEN_AND,
-        TOKEN_OR,
-        TOKEN_FALSE,
-        TOKEN_TRUE,
-        TOKEN_PRINT,
+        AND,
+        OR,
+        FALSE,
+        TRUE,
+        PRINT,
 
         // Others:
-        TOKEN_LEFT_PAREN,
-        TOKEN_RIGHT_PAREN,
-        TOKEN_DOT,
-        TOKEN_MINUS,
-        TOKEN_PLUS,
-        TOKEN_SEMICOLON,
-        TOKEN_SLASH,
-        TOKEN_STAR,
-        TOKEN_BANG,
-        TOKEN_BANG_EQUAL,
-        TOKEN_EQUAL,
-        TOKEN_EQUAL_EQUAL,
-        TOKEN_GREATER,
-        TOKEN_GREATER_EQUAL,
-        TOKEN_LESS,
-        TOKEN_LESS_EQUAL,
-        TOKEN_EOF
+        LEFT_PAREN,
+        RIGHT_PAREN,
+        DOT,
+        MINUS,
+        PLUS,
+        SLASH,
+        STAR,
+        SEMICOLON,
+        BANG,
+        BANG_EQUAL,
+        EQUAL,
+        EQUAL_EQUAL,
+        GREATER,
+        GREATER_EQUAL,
+        LESS,
+        LESS_EQUAL,
+        END
     };
 
     const Type type;
     const std::string lexeme;
     const std::size_t line;
+    const void* literal;
 };
 
-#endif // WODEN_TOKEN_HPP
+#endif // WODEN_HPP

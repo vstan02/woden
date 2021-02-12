@@ -18,3 +18,115 @@
  */
 
 #include "Scanner.hpp"
+
+#include <utility>
+#include <stdexcept>
+
+Scanner::Scanner(std::string source)
+: source(std::move(source)), start(0), current(0), line(1) {}
+
+std::vector<Token> Scanner::scan() {
+    while (!isAtEnd()) {
+        start = current;
+        scanToken();
+    }
+
+    tokens.push_back(Token { Token::END, "", line });
+    return tokens;
+}
+
+void Scanner::scanToken() {
+    char c = advance();
+    switch (c) {
+        case ' ':
+        case '\r':
+        case '\t': break;
+        case '\n': line++; break;
+        case '(': addToken(Token::LEFT_PAREN); break;
+        case ')': addToken(Token::RIGHT_PAREN); break;
+        case '.': addToken(Token::DOT); break;
+        case '+': addToken(Token::PLUS); break;
+        case '-': addToken(Token::MINUS); break;
+        case '*': addToken(Token::STAR); break;
+        case ';': addToken(Token::SEMICOLON); break;
+        case '=': addToken(match('=') ? Token::EQUAL_EQUAL : Token::EQUAL); break;
+        case '!': addToken(match('=') ? Token::BANG_EQUAL : Token::BANG); break;
+        case '<': addToken(match('=') ? Token::LESS_EQUAL : Token::LESS); break;
+        case '>': addToken(match('=') ? Token::GREATER_EQUAL : Token::GREATER); break;
+        case '/': scanSlash(); break;
+        case '"': scanString(); break;
+        default: scanOther();
+    }
+}
+
+void Scanner::scanSlash() {
+    if (match('/')) {
+        while (peek() != '\n') advance();
+    } else {
+        addToken(Token::SLASH);
+    }
+}
+
+void Scanner::scanString() {
+    if (peek() != '"') {
+        if (isAtEnd() || peek() == '\n')
+            throw std::runtime_error("Unterminated string.");
+        advance();
+    }
+
+    advance();
+    auto* value = new std::string(source.substr(start + 1, current - 1));
+    addToken(Token::STRING, value);
+}
+
+void Scanner::scanInteger() {
+    while (isDigit(peek())) advance();
+    int value = std::stoi(source.substr(start, current));
+    addToken(Token::INTEGER, new int(value));
+}
+
+void Scanner::scanOther() {
+    if (isDigit(peek())) {
+        scanInteger();
+    } else {
+        throw std::runtime_error("Unexpected character.");
+    }
+}
+
+void Scanner::addToken(Token::Type type) {
+    addToken(type, nullptr);
+}
+
+void Scanner::addToken(Token::Type type, void *literal) {
+    std::string lexeme = source.substr(start, current);
+    tokens.push_back(Token { type, lexeme, line, literal });
+}
+
+char Scanner::advance() {
+    return source.at(++current - 1);
+}
+
+char Scanner::peek() {
+    return isAtEnd() ? '\0' : source.at(current);
+}
+
+char Scanner::peekNext() {
+    return current + 1 >= source.size()
+        ? '\0' : source.at(current + 1);
+}
+
+bool Scanner::match(char expected) {
+    if (isAtEnd() || source.at(current) != expected) {
+        return false;
+    }
+    ++current;
+    return true;
+}
+
+bool Scanner::isDigit(char target) {
+    return target >= '0' && target <= '9';
+}
+
+bool Scanner::isAtEnd() {
+    return current >= source.size();
+}

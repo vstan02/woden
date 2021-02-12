@@ -20,6 +20,41 @@
 #ifndef WODEN_SCANNER_HPP
 #define WODEN_SCANNER_HPP
 
-class Scanner {};
+#include <string>
+#include <vector>
+
+#include "Token.hpp"
+
+class Scanner {
+    private:
+        std::string source;
+        std::vector<Token> tokens;
+        std::size_t start;
+        std::size_t current;
+        std::size_t line;
+
+    public:
+        explicit Scanner(std::string source);
+
+        std::vector<Token> scan();
+
+    private:
+        bool isAtEnd();
+        bool isDigit(char target);
+        bool match(char expected);
+
+        char peek();
+        char peekNext();
+        char advance();
+
+        void addToken(Token::Type type);
+        void addToken(Token::Type type, void* literal);
+
+        void scanToken();
+        void scanSlash();
+        void scanString();
+        void scanInteger();
+        void scanOther();
+};
 
 #endif // WODEN_SCANNER_HPP
