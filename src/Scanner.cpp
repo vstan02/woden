@@ -60,11 +60,9 @@ void Scanner::scanToken() {
 }
 
 void Scanner::scanSlash() {
-    if (match('/')) {
-        while (peek() != '\n') advance();
-    } else {
-        addToken(Token::SLASH);
-    }
+    if (!match('/'))
+        return addToken(Token::SLASH);
+    while (peek() != '\n') advance();
 }
 
 void Scanner::scanString() {
