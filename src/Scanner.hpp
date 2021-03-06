@@ -22,10 +22,21 @@
 
 #include <string>
 #include <vector>
+#include <map>
 
 #include "Token.hpp"
 
 class Scanner {
+    private:
+        const std::map<std::string, Token::Type> keywords = {
+            { "program", Token::PROGRAM },
+            { "and", Token::AND },
+            { "or", Token::OR },
+            { "true", Token::TRUE },
+            { "false", Token::FALSE },
+            { "print", Token::PRINT }
+        };
+
     private:
         std::string source;
         std::vector<Token> tokens;
@@ -41,6 +52,8 @@ class Scanner {
     private:
         bool isAtEnd();
         bool isDigit(char target);
+        bool isAlpha(char target);
+        bool isAlphaNum(char target);
         bool match(char expected);
 
         char peek();
@@ -54,6 +67,7 @@ class Scanner {
         void scanSlash();
         void scanString();
         void scanInteger();
+        void scanIdentifier();
         void scanOther();
 };
 

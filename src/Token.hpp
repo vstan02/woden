@@ -29,6 +29,7 @@ struct Token {
         INTEGER,
 
         // Keywords:
+        PROGRAM,
         AND,
         OR,
         FALSE,
@@ -52,6 +53,7 @@ struct Token {
         GREATER_EQUAL,
         LESS,
         LESS_EQUAL,
+        IDENTIFIER,
         END
     };
 

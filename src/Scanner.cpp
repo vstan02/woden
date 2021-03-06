@@ -83,9 +83,21 @@ void Scanner::scanInteger() {
     addToken(Token::INTEGER, new int(value));
 }
 
+void Scanner::scanIdentifier() {
+    while (isAlphaNum(peek())) advance();
+    std::string text = source.substr(start, current);
+    auto result = keywords.find(text);
+    Token::Type type = result != keywords.end()
+       ? result->second : Token::IDENTIFIER;
+    addToken(type);
+}
+
 void Scanner::scanOther() {
-    if (isDigit(peek())) {
+    char c = peek();
+    if (c) {
         scanInteger();
+    } else if(isAlpha(c)) {
+        scanIdentifier();
     } else {
         throw std::runtime_error("Unexpected character.");
     }
@@ -119,6 +131,16 @@ bool Scanner::match(char expected) {
     }
     ++current;
     return true;
+}
+
+bool Scanner::isAlphaNum(char target) {
+    return isAlpha(target) || isDigit(target);
+}
+
+bool Scanner::isAlpha(char target) {
+    return target == '_'
+        || (target >= 'a' && target <= 'z')
+        || (target >= 'A' && target <= 'Z');
 }
 
 bool Scanner::isDigit(char target) {
