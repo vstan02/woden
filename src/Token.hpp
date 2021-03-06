@@ -39,6 +39,8 @@ struct Token {
         // Others:
         LEFT_PAREN,
         RIGHT_PAREN,
+        LEFT_BRACE,
+        RIGHT_BRACE,
         DOT,
         MINUS,
         PLUS,

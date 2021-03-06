@@ -57,7 +57,6 @@ class Scanner {
         bool match(char expected);
 
         char peek();
-        char peekNext();
         char advance();
 
         void addToken(Token::Type type);

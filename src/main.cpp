@@ -20,6 +20,11 @@
 #include <iostream>
 
 int main() {
-    std::cout << "Hello Woden World!" << std::endl;
-    return 0;
+    try {
+        std::cout << "Welcome to Woden!" << std::endl;
+        return EXIT_SUCCESS;
+    } catch (const std::exception& error) {
+        std::cerr << error.what() << std::endl;
+        return EXIT_FAILURE;
+    }
 }

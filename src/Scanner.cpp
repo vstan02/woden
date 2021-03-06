@@ -26,12 +26,14 @@ Scanner::Scanner(std::string source)
 : source(std::move(source)), start(0), current(0), line(1) {}
 
 std::vector<Token> Scanner::scan() {
-    while (!isAtEnd()) {
-        start = current;
-        scanToken();
+    if (tokens.empty()) {
+        while (!isAtEnd()) {
+            start = current;
+            scanToken();
+        }
+        addToken(Token::END);
     }
 
-    tokens.push_back(Token { Token::END, "", line });
     return tokens;
 }
 
@@ -44,6 +46,8 @@ void Scanner::scanToken() {
         case '\n': line++; break;
         case '(': addToken(Token::LEFT_PAREN); break;
         case ')': addToken(Token::RIGHT_PAREN); break;
+        case '{': addToken(Token::LEFT_BRACE); break;
+        case '}': addToken(Token::RIGHT_BRACE); break;
         case '.': addToken(Token::DOT); break;
         case '+': addToken(Token::PLUS); break;
         case '-': addToken(Token::MINUS); break;
@@ -66,40 +70,40 @@ void Scanner::scanSlash() {
 }
 
 void Scanner::scanString() {
-    if (peek() != '"') {
+    while (peek() != '"') {
         if (isAtEnd() || peek() == '\n')
-            throw std::runtime_error("Unterminated string.");
+            throw std::runtime_error("Scanner::scanString - Unterminated string.");
         advance();
     }
 
+    auto* value = new std::string(source.substr(start + 1, current - start - 1));
     advance();
-    auto* value = new std::string(source.substr(start + 1, current - 1));
     addToken(Token::STRING, value);
 }
 
 void Scanner::scanInteger() {
     while (isDigit(peek())) advance();
-    int value = std::stoi(source.substr(start, current));
+    int value = std::stoi(source.substr(start, (current - start)));
     addToken(Token::INTEGER, new int(value));
 }
 
 void Scanner::scanIdentifier() {
     while (isAlphaNum(peek())) advance();
-    std::string text = source.substr(start, current);
+    std::string text = source.substr(start, (current - start));
     auto result = keywords.find(text);
-    Token::Type type = result != keywords.end()
-       ? result->second : Token::IDENTIFIER;
-    addToken(type);
+    return result != keywords.end()
+        ? addToken(result->second)
+        : addToken(Token::IDENTIFIER, new std::string(text));
 }
 
 void Scanner::scanOther() {
     char c = peek();
-    if (c) {
+    if (isDigit(c)) {
         scanInteger();
     } else if(isAlpha(c)) {
         scanIdentifier();
     } else {
-        throw std::runtime_error("Unexpected character.");
+        throw std::runtime_error("Scanner::scanOther - Unexpected character.");
     }
 }
 
@@ -107,8 +111,8 @@ void Scanner::addToken(Token::Type type) {
     addToken(type, nullptr);
 }
 
-void Scanner::addToken(Token::Type type, void *literal) {
-    std::string lexeme = source.substr(start, current);
+void Scanner::addToken(Token::Type type, void* literal) {
+    std::string lexeme = source.substr(start, (current - start));
     tokens.push_back(Token { type, lexeme, line, literal });
 }
 
@@ -118,11 +122,6 @@ char Scanner::advance() {
 
 char Scanner::peek() {
     return isAtEnd() ? '\0' : source.at(current);
-}
-
-char Scanner::peekNext() {
-    return current + 1 >= source.size()
-        ? '\0' : source.at(current + 1);
 }
 
 bool Scanner::match(char expected) {

@@ -14,7 +14,10 @@ set(
     src/Scanner.cpp
 )
 
-set(WODEN_TESTS)
+set(
+    WODEN_TESTS
+    src/ScannerTest.cpp
+)
 
 add_executable(Main src/main.cpp ${WODEN_SOURCES} ${WODEN_HEADERS})
 add_executable(Test ${WODEN_TESTS} ${WODEN_SOURCES} ${WODEN_HEADERS})
