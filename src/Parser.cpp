@@ -1,4 +1,4 @@
-/* ScannerTest - Tests for Woden lexical analyzer
+/* Parser - Woden syntactic analyser
  * Copyright (C) 2020 Stan Vlad <vstan02@protonmail.com>
  *
  * This file is part of Woden.
@@ -17,23 +17,8 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-#include <gtest/gtest.h>
+#include <utility>
 
-#include "Scanner.hpp"
+#include "Parser.hpp"
 
-TEST(Scanner, scan) {
-    Scanner scanner("program { test 56 and \"message\" }");
-    auto result = scanner.scan();
-    auto it = result.begin();
-
-    EXPECT_EQ(it->type, Token::PROGRAM);
-    EXPECT_EQ((++it)->type, Token::LEFT_BRACE);
-    EXPECT_EQ((++it)->type, Token::IDENTIFIER);
-    EXPECT_EQ((++it)->type, Token::INTEGER);
-    EXPECT_EQ(*((int*)it->literal), 56);
-    EXPECT_EQ((++it)->type, Token::AND);
-    EXPECT_EQ((++it)->type, Token::STRING);
-    EXPECT_EQ(*((std::string*)it->literal), "message");
-    EXPECT_EQ((++it)->type, Token::RIGHT_BRACE);
-    EXPECT_EQ((++it)->type, Token::END);
-}
+Parser::Parser(std::vector<Token> tokens): tokens(std::move(tokens)) {}

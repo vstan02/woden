@@ -7,11 +7,14 @@ set(
     WODEN_HEADERS
     src/Token.hpp
     src/Scanner.hpp
+    src/Parser.hpp
+    src/Expression.hpp
 )
 
 set(
     WODEN_SOURCES
     src/Scanner.cpp
+    src/Parser.cpp
 )
 
 set(
