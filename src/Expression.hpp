@@ -67,7 +67,7 @@ namespace expression {
         Expression left;
         Expression right;
 
-        template<typename Type>
+        template <typename Type>
         Type accept(Visitor<Type> visitor) override {
             return visitor.visitBinaryExpression(this);
         }
@@ -77,7 +77,7 @@ namespace expression {
         Token opr;
         Expression target;
 
-        template<typename Type>
+        template <typename Type>
         Type accept(Visitor<Type> visitor) override {
             return visitor.visitUnaryExpression(this);
         }
@@ -88,7 +88,7 @@ namespace expression {
         Expression left;
         Expression right;
 
-        template<typename Type>
+        template <typename Type>
         Type accept(Visitor<Type> visitor) override {
             return visitor.visitLogicalExpression(this);
         }
