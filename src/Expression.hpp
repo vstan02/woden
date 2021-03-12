@@ -45,7 +45,7 @@ namespace expression {
     };
 
     struct Literal: Expression {
-        void* value;
+        const void* value;
 
         template <typename Type>
         Type accept(Visitor<Type> visitor) override {
@@ -54,7 +54,7 @@ namespace expression {
     };
 
     struct Grouping: Expression {
-        Expression target;
+        const Expression target;
 
         template <typename Type>
         Type accept(Visitor<Type> visitor) override {
@@ -63,9 +63,9 @@ namespace expression {
     };
 
     struct Binary: Expression {
-        Token opr;
-        Expression left;
-        Expression right;
+        const Token opr;
+        const Expression left;
+        const Expression right;
 
         template <typename Type>
         Type accept(Visitor<Type> visitor) override {
@@ -74,8 +74,8 @@ namespace expression {
     };
 
     struct Unary: Expression {
-        Token opr;
-        Expression target;
+        const Token opr;
+        const Expression target;
 
         template <typename Type>
         Type accept(Visitor<Type> visitor) override {
@@ -84,9 +84,9 @@ namespace expression {
     };
 
     struct Logical: Expression {
-        Token opr;
-        Expression left;
-        Expression right;
+        const Token opr;
+        const Expression left;
+        const Expression right;
 
         template <typename Type>
         Type accept(Visitor<Type> visitor) override {
