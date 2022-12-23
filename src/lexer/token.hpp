@@ -1,4 +1,4 @@
-/* Base Content - String content for the lexical analyzer
+/* Token - Woden lexical tokens
  * Copyright (C) 2021 Stan Vlad <vstan02@protonmail.com>
  *
  * This file is part of Woden.
@@ -17,29 +17,65 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-#ifndef WODEN_LEXER_BASE_CONTENT
-#define WODEN_LEXER_BASE_CONTENT
+#ifndef WODEN_LEXER_TOKEN
+#define WODEN_LEXER_TOKEN
 
-#include "content.hpp"
+#include <cstddef>
 
 namespace woden::lexer {
-    class base_content: public content {
-        public:
-            base_content(const char* target);
+	enum token_type {
+		LEFT_PAREN,
+		RIGHT_PAREN,
+		LEFT_BRACE,
+		RIGHT_BRACE,
+		LEFT_BRACKET,
+		RIGHT_BRACKET,
+		COMMA,
+		DOT,
+		MINUS,
+		PLUS,
+		SEMICOLON,
+		SLASH,
+		STAR,
+		PERCENT,
+		BANG,
+		BANG_EQUAL,
+		EQUAL,
+		EQUAL_EQUAL,
+		GREATER,
+		GREATER_EQUAL,
+		LESS,
+		LESS_EQUAL,
+		IDENTIFIER,
+		STRING,
+		NUMBER,
+		AND,
+		OR,
+		TRUE,
+		FALSE,
+		NONE,
+		IF,
+		ELSE,
+		VAR,
+		FOR,
+		WHILE,
+		RETURN,
+		FUNC,
+		CLASS,
+		SUPER,
+		THIS,
+		NEW,
+		PRINT,
+		PROGRAM,
+		END
+	};
 
-            const char* word() const;
-            std::size_t size() const;
-
-            void start_word();
-            char advance();
-            void shift(std::size_t size);
-
-            char operator[](std::size_t index) const;
-
-        private:
-            const char* _start;
-            const char* _current;
-    };
+	struct token {
+		token_type type;
+		const char* start;
+		std::size_t size;
+		std::size_t line;
+	};
 }
 
-#endif // WODEN_LEXER_BASE_CONTENT
+#endif // WODEN_LEXER_TOKEN

@@ -1,4 +1,4 @@
-/* Parser - Woden syntax analyzer
+/* Exception - Woden lexical analyzer exceptions
  * Copyright (C) 2021 Stan Vlad <vstan02@protonmail.com>
  *
  * This file is part of Woden.
@@ -17,23 +17,33 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-#ifndef WODEN_PARSER_PARSER
-#define WODEN_PARSER_PARSER
+#ifndef WODEN_LEXER_EXCEPTION
+#define WODEN_LEXER_EXCEPTION
 
-#include <cstddef>
+#include <stdexcept>
 
-#include "lexer/lexer.hpp"
+namespace woden::lexer {
+	class exception: public std::runtime_error {
+		public:
+			explicit exception(const char* message, std::size_t line);
 
-namespace woden::parser {
-    class parser {
-        public:
-            explicit parser(const lexer::lexer& lexer);
+			[[nodiscard]] std::size_t where() const noexcept;
 
-            void compare(const lexer::token_type* token_types);
+		private:
+			std::size_t _line;
+	};
 
-        private:
-            lexer::lexer _target;
-    };
+	class unexpected_character_error: public exception {
+		public:
+			explicit unexpected_character_error(std::size_t line)
+			: exception("Unexpected character.", line) {}
+	};
+
+	class unterminated_string_error: public exception {
+		public:
+			explicit unterminated_string_error(std::size_t line)
+			: exception("Unterminated string.", line) {}
+	};
 }
 
-#endif // WODEN_PARSER_PARSER
+#endif // WODEN_LEXER_EXCEPTION

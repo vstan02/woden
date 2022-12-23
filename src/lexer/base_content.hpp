@@ -17,36 +17,29 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-#include <cstring>
-#include <cstdlib>
+#ifndef WODEN_LEXER_BASE_CONTENT
+#define WODEN_LEXER_BASE_CONTENT
 
-#include "lexer/base_content.hpp"
+#include "content.hpp"
 
 namespace woden::lexer {
-	base_content::base_content(const char *target)
-		: content(), _start(target), _current(target) {}
+	class base_content: public content {
+		public:
+			base_content(const char* target);
 
-	std::size_t base_content::size() const {
-		return _current - _start;
-	}
+			const char* word() const;
+			std::size_t size() const;
 
-	const char* base_content::word() const {
-		return _start;
-	}
+			void start_word();
+			char advance();
+			void shift(std::size_t size);
 
-	char base_content::operator[](std::size_t index) const {
-		return _current[index];
-	}
+			char operator[](std::size_t index) const;
 
-	char base_content::advance() {
-		return (++_current)[-1];
-	}
-
-	void base_content::shift(std::size_t size) {
-		_start += size;
-	}
-
-	void base_content::start_word() {
-		_start = _current;
-	}
+		private:
+			const char* _start;
+			const char* _current;
+	};
 }
+
+#endif // WODEN_LEXER_BASE_CONTENT

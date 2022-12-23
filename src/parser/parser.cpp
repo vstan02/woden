@@ -17,25 +17,89 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-#include <iostream>
-
 #include "parser/parser.hpp"
 #include "lexer/exception.hpp"
 
 namespace woden::parser {
-    parser::parser(const lexer::lexer& lexer): _target(lexer) {}
+	parser::parser(const lexer::lexer& lexer): _target(lexer) {
+		_current = _target.next_token();
+		_next = _target.next_token();
+	}
 
-    void parser::compare(const lexer::token_type* token_types) {
-        try {
-            do {
-                auto token = _target.next_token();
-                std::string temp(token.start, token.size);
-                std::cout << ">> " << token.line << ": '" << temp << "' => ";
-                std::cout << (*token_types == token.type ? "CORRECT" : "INCORRECT") << std::endl;
-            } while (*(++token_types) != lexer::token_type::END);
-        } catch (const lexer::exception& error) {
-            std::cerr << ">> Lexing error: " << error.what() << std::endl;
-            std::cerr << "------> at line: " << error.where() << std::endl;
-        }
-    }
+	std::vector<lexer::token> parser::parse() {
+		return std::vector<lexer::token>();
+	}
+
+	const exprs::expression* parser::expression() {
+		return equality();
+	}
+
+	const exprs::expression* parser::equality() {
+		using lexer::token_type;
+		const exprs::expression* result = comparison();
+		while (match({ token_type::EQUAL_EQUAL, token_type::BANG_EQUAL })) {
+			result = new exprs::binary(_current, result, comparison());
+		}
+		return result;
+	}
+
+	const exprs::expression* parser::comparison() {
+		using lexer::token_type;
+		const exprs::expression* result = term();
+		while (match({ token_type::GREATER, token_type::GREATER_EQUAL, token_type::LESS, token_type::LESS_EQUAL })) {
+			result = new exprs::binary(_current, result, term());
+		}
+		return result;
+	}
+
+	const exprs::expression* parser::term() {
+		using lexer::token_type;
+		const exprs::expression* result = factor();
+		while (match({ token_type::PLUS, token_type::MINUS })) {
+			result = new exprs::binary(_current, result, factor());
+		}
+		return result;
+	}
+
+	const exprs::expression* parser::factor() {
+		using lexer::token_type;
+		const exprs::expression* result = unary();
+		while (match({ token_type::STAR, token_type::SLASH })) {
+			result = new exprs::binary(_current, result, unary());
+		}
+		return result;
+	}
+
+	const exprs::expression* parser::unary() {
+		using lexer::token_type;
+		if (match({ token_type::BANG, token_type::MINUS })) {
+			return new exprs::unary(_current, unary());
+		}
+		return new exprs::literal(_current);
+	}
+
+	bool parser::at_end() const {
+		return _next.type == lexer::token_type::END;
+	}
+
+	bool parser::check(lexer::token_type type) const {
+		return _current.type == type;
+	}
+
+	bool parser::match(std::vector<lexer::token_type> types) {
+		for (lexer::token_type type: types) {
+			if (check(type)) {
+				advance();
+				return true;
+			}
+		}
+		return false;
+	}
+
+	void parser::advance() {
+		if (!at_end()) {
+			_current = _next;
+			_next = _target.next_token();
+		}
+	}
 }

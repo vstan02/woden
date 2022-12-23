@@ -22,33 +22,32 @@
 #include "parser/parser.hpp"
 
 #define CODE \
-    "program {\n" \
-    "// Some Woden code:\n" \
-    "/*\n" \
-    " * test\n" \
-    " * tessst\n" \
-    " */\n" \
-    "\tvar x = \"Hello World!\";\n" \
-    "}"
+	"program {\n" \
+	"// Some Woden code:\n" \
+	"/*\n" \
+	" * test\n" \
+	" * tessst\n" \
+	" */\n" \
+	"\tvar x = \"Hello World!\";\n" \
+	"}"
 
 using namespace woden;
 
 lexer::token_type tokens[] = {
-    lexer::token_type::PROGRAM,
-    lexer::token_type::LEFT_BRACE,
-    lexer::token_type::VAR,
-    lexer::token_type::IDENTIFIER,
-    lexer::token_type::EQUAL,
-    lexer::token_type::STRING,
-    lexer::token_type::SEMICOLON,
-    lexer::token_type::RIGHT_BRACE,
-    lexer::token_type::END
+	lexer::token_type::PROGRAM,
+	lexer::token_type::LEFT_BRACE,
+	lexer::token_type::VAR,
+	lexer::token_type::IDENTIFIER,
+	lexer::token_type::EQUAL,
+	lexer::token_type::STRING,
+	lexer::token_type::SEMICOLON,
+	lexer::token_type::RIGHT_BRACE,
+	lexer::token_type::END
 };
 
-int main() {
-    lexer::base_content code(CODE);
-    lexer::lexer lexer(code);
-    parser::parser parser(lexer);
-    parser.compare(tokens);
-    return 0;
+extern int main() {
+	lexer::base_content code(CODE);
+	lexer::lexer lexer(code);
+	parser::parser parser(lexer);
+	return 0;
 }

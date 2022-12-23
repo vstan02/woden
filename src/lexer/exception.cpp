@@ -20,10 +20,10 @@
 #include "lexer/exception.hpp"
 
 namespace woden::lexer {
-    exception::exception(const char *message, std::size_t line)
-        : std::runtime_error(message), _line(line) {}
+	exception::exception(const char *message, std::size_t line)
+		: std::runtime_error(message), _line(line) {}
 
-    std::size_t exception::where() const noexcept {
-        return _line;
-    }
+	std::size_t exception::where() const noexcept {
+		return _line;
+	}
 }

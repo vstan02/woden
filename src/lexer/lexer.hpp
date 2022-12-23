@@ -26,29 +26,29 @@
 #include "lexer/content.hpp"
 
 namespace woden::lexer {
-    class lexer {
-        public:
-            explicit lexer(content& code);
+	class lexer {
+		public:
+			explicit lexer(content& code);
 
-            token next_token();
+			token next_token();
 
-        private:
-            content& _code;
+		private:
+			content& _code;
 
-        private:
-            [[nodiscard]] bool is_alpha(char) const;
-            [[nodiscard]] bool is_digit(char) const;
-            [[nodiscard]] bool is_alphanum(char) const;
+		private:
+			[[nodiscard]] bool is_alpha(char) const;
+			[[nodiscard]] bool is_digit(char) const;
+			[[nodiscard]] bool is_alphanum(char) const;
 
-            token_type id_token();
+			token_type id_token();
 
-            token make_token(token_type);
-            token make_id();
-            token make_number();
-            token make_string();
-            token choose_token(char, token_type, token_type);
-            token assert_token(char, token_type);
-    };
+			token make_token(token_type);
+			token make_id();
+			token make_number();
+			token make_string();
+			token choose_token(char, token_type, token_type);
+			token assert_token(char, token_type);
+	};
 }
 
 #endif // WODEN_LEXER_LEXER
