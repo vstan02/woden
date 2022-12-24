@@ -94,7 +94,7 @@ namespace woden::lexer {
 	}
 
 	bool lexer::is_alpha(char ch) const {
-		return ch == '_' || ch >= 'a' && ch <= 'z' || ch >= 'A' && ch <= 'Z';
+		return ch == '_' || (ch >= 'a' && ch <= 'z') || (ch >= 'A' && ch <= 'Z');
 	}
 
 	bool lexer::is_digit(char ch) const {

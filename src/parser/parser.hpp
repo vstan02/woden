@@ -33,11 +33,11 @@ namespace woden::parser {
 			explicit parser(const lexer::lexer& lexer);
 
 			std::vector<lexer::token> parse();
-			const exprs::expression* expression();
+			exprs::expression* expression();
 
 		private:
 			lexer::token _current;
-			lexer::token _next;
+			lexer::token _previous;
 			lexer::lexer _target;
 
 		private:
@@ -47,11 +47,11 @@ namespace woden::parser {
 			void advance();
 			bool match(std::vector<lexer::token_type> types);
 
-			const exprs::expression* unary();
-			const exprs::expression* factor();
-			const exprs::expression* term();
-			const exprs::expression* comparison();
-			const exprs::expression* equality();
+			exprs::expression* unary();
+			exprs::expression* factor();
+			exprs::expression* term();
+			exprs::expression* comparison();
+			exprs::expression* equality();
 	};
 }
 

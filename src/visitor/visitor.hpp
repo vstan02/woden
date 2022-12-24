@@ -1,4 +1,4 @@
-/* Woden - A true Object-Oriented programming language
+/* Viewer - Woden syntax tree visitor
  * Copyright (C) 2021 Stan Vlad <vstan02@protonmail.com>
  *
  * This file is part of Woden.
@@ -17,20 +17,28 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-#include "lexer/lexer.hpp"
-#include "lexer/token.hpp"
-#include "lexer/base_content.hpp"
+#ifndef WODEN_VISITOR_VISITOR
+#define WODEN_VISITOR_VISITOR
+
 #include "parser/parser.hpp"
-#include "visitor/ast_view.hpp"
 
-#define CODE "-23 + 56 - 4"
+namespace woden::visitor {
+	class visitor {
+		public:
+			explicit visitor(const parser::parser& parser);
+			~visitor();
 
-extern int main() {
-	using namespace woden;
-	lexer::base_content code(CODE);
-	lexer::lexer lexer(code);
-	parser::parser parser(lexer);
-	visitor::ast_view view(parser);
-	view.print();
-	return 0;
+		protected:
+			parser::parser _target;
+			parser::exprs::expression* _root;
+
+		private:
+			void dealloc_expression(parser::exprs::expression* node);
+			void dealloc_assign_expression(parser::exprs::assign* node);
+			void dealloc_binary_expression(parser::exprs::binary* node);
+			void dealloc_unary_expression(parser::exprs::unary* node);
+			void dealloc_grouping_expression(parser::exprs::grouping* node);
+	};
 }
+
+#endif // WODEN_VISITOR_VISITOR

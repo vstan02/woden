@@ -42,25 +42,25 @@ namespace woden::parser::exprs {
 
 	struct assign: expression {
 		lexer::token name;
-		const expression* value;
+		expression* value;
 
-		assign(lexer::token name, const expression* value)
+		assign(lexer::token name, expression* value)
 			: expression(expression_type::ASSIGN), name(name), value(value) {}
 	};
 
 	struct binary: expression {
 		lexer::token operation;
-		const expression* left;
-		const expression* right;
+		expression* left;
+		expression* right;
 
-		binary(lexer::token op, const expression* left, const expression* right)
+		binary(lexer::token op, expression* left, expression* right)
 			: expression(expression_type::BINARY), operation(op), left(left), right(right) {}
 	};
 
 	struct grouping: expression {
-		const expression* target;
+		expression* target;
 
-		grouping(const expression* target)
+		grouping(expression* target)
 			: expression(expression_type::GROUPING), target(target) {}
 	};
 
@@ -80,9 +80,9 @@ namespace woden::parser::exprs {
 
 	struct unary: expression {
 		lexer::token operation;
-		const expression* target;
+		expression* target;
 
-		unary(lexer::token operation, const expression* target)
+		unary(lexer::token operation, expression* target)
 			: expression(expression_type::UNARY), operation(operation), target(target) {}
 	};
 }
