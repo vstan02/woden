@@ -33,6 +33,8 @@ namespace woden::visitor {
 		private:
 			[[nodiscard]] std::string tab(std::size_t deep = 0) const;
 
+			void print_name(const char* category, const char* name);
+
 			void print_expression(parser::exprs::expression* node, std::size_t deep = 0);
 			void print_assign_expression(parser::exprs::assign* node, std::size_t deep = 0);
 			void print_binary_expression(parser::exprs::binary* node, std::size_t deep = 0);

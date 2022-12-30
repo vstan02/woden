@@ -12,7 +12,8 @@
 
 ### Dependencies
 - C++ compiler
-- cmake (>= 3.20)
+- Build system generator: cmake
+- Package manager: conan
 
 These packages can usually be installed through your distributions package manager.
 

@@ -19,6 +19,7 @@
 
 #include <string>
 #include <iostream>
+#include <termcolor/termcolor.hpp>
 
 #include "visitor/ast_view.hpp"
 
@@ -53,14 +54,18 @@ namespace woden::visitor {
 
 	void ast_view::print_assign_expression(parser::exprs::assign* node, std::size_t deep) {
 		std::string name(node->name.start, node->name.size);
-		std::cout << tab(deep) << "Expression::Assign {\n" << tab(deep + 1) << "'" << name << "',\n";
+		std::cout << termcolor::bright_white << tab(deep);
+		print_name("Expression", "Assign");
+		std::cout << termcolor::bright_white << " {\n" << tab(deep + 1) << "'" << name << "',\n";
 		print_expression(node->value, deep + 1);
 		std::cout << '\n' << tab(deep) << '}';
 	}
 
 	void ast_view::print_binary_expression(parser::exprs::binary* node, std::size_t deep) {
 		std::string op(node->operation.start, node->operation.size);
-		std::cout << tab(deep) << "Expression::Binary {\n" << tab(deep + 1) << "'" << op << "',\n";
+		std::cout << termcolor::bright_white << tab(deep);
+		print_name("Expression", "Binary");
+		std::cout << termcolor::bright_white << " {\n" << tab(deep + 1) << "'" << op << "',\n";
 		print_expression(node->left, deep + 1);
 		std::cout << ",\n";
 		print_expression(node->right, deep + 1);
@@ -69,28 +74,40 @@ namespace woden::visitor {
 
 	void ast_view::print_unary_expression(parser::exprs::unary* node, std::size_t deep) {
 		std::string op(node->operation.start, node->operation.size);
-		std::cout << tab(deep) << "Expression::Unary {\n" << tab(deep + 1) << "'" << op << "',\n";
+		std::cout << termcolor::bright_white << tab(deep);
+		print_name("Expression", "Unary");
+		std::cout << termcolor::bright_white << " {\n" << tab(deep + 1) << "'" << op << "',\n";
 		print_expression(node->target, deep + 1);
 		std::cout << '\n' << tab(deep) << '}';
 	}
 
 	void ast_view::print_literal_expression(parser::exprs::literal* node, std::size_t deep) {
 		std::string value(node->value.start, node->value.size);
-		std::cout << tab(deep) << "Expression::Literal { '" << value << "' }";
+		std::cout << termcolor::bright_white << tab(deep);
+		print_name("Expression", "Literal");
+		std::cout << termcolor::bright_white << " { '" << value << "' }";
 	}
 
 	void ast_view::print_variable_expression(parser::exprs::variable* node, std::size_t deep) {
 		std::string name(node->name.start, node->name.size);
-		std::cout << tab(deep) << "Expression::Variable { '" << name << "' }";
+		std::cout << termcolor::bright_white << tab(deep);
+		print_name("Expression", "Variable");
+		std::cout << termcolor::bright_white << " { '" << name << "' }";
 	}
 
 	void ast_view::print_grouping_expression(parser::exprs::grouping* node, std::size_t deep) {
-		std::cout << tab(deep) << "Expression::Grouping {\n";
+		std::cout << termcolor::bright_white << tab(deep);
+		print_name("Expression", "Grouping");
+		std::cout << termcolor::bright_white << " {\n";
 		print_expression(node->target, deep + 1);
 		std::cout << '\n' << tab(deep) << '}';
 	}
 
 	std::string ast_view::tab(std::size_t deep) const {
 		return std::string(deep * 2, ' ');
+	}
+
+	void ast_view::print_name(const char* category, const char* name) {
+		std::cout << termcolor::bright_blue << category << termcolor::bright_white << "::" << termcolor::bright_yellow << name;
 	}
 }
