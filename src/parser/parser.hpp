@@ -47,6 +47,7 @@ namespace woden::parser {
 			void advance();
 			bool match(std::vector<lexer::token_type> types);
 
+			exprs::expression* primary();
 			exprs::expression* unary();
 			exprs::expression* factor();
 			exprs::expression* term();

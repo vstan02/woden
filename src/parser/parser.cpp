@@ -17,11 +17,35 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
+#include <iostream>
+#include <array>
+
 #include "parser/parser.hpp"
+#include "parser/exception.hpp"
+
+template <std::size_t size>
+static void debug_tokens(const char* target, std::array<char*, size> names, std::array<woden::lexer::token, size> values) {
+	std::cout << "dbg::" << target << '(';
+	for (std::size_t index = 0; index < size; ++index) {
+		std::cout << names[index];
+		if (index < size - 1) {
+			std::cout << ", ";
+		}
+	}
+	std::cout << "): ";
+	for (std::size_t index = 0; index < size; ++index) {
+		std::string content(values[index].start, values[index].size);
+		std::cout << '"' << content << '"';
+		if (index < size - 1) {
+			std::cout << ", ";
+		}
+	}
+	std::cout << '\n';
+}
 
 namespace woden::parser {
 	parser::parser(const lexer::lexer& lexer): _current(), _previous(), _target(lexer) {
-		_previous = _current = _target.next_token(); // This line should be removed
+		_current = _target.next_token(); // This line should be removed
 	}
 
 	std::vector<lexer::token> parser::parse() {
@@ -37,7 +61,8 @@ namespace woden::parser {
 		using lexer::token_type;
 		exprs::expression* result = comparison();
 		while (match({ token_type::EQUAL_EQUAL, token_type::BANG_EQUAL })) {
-			result = new exprs::binary(_previous, result, comparison());
+			lexer::token token = _previous;
+			result = new exprs::binary(token, result, comparison());
 		}
 		return result;
 	}
@@ -46,7 +71,8 @@ namespace woden::parser {
 		using lexer::token_type;
 		exprs::expression* result = term();
 		while (match({ token_type::GREATER, token_type::GREATER_EQUAL, token_type::LESS, token_type::LESS_EQUAL })) {
-			result = new exprs::binary(_previous, result, term());
+			lexer::token token = _previous;
+			result = new exprs::binary(token, result, term());
 		}
 		return result;
 	}
@@ -55,7 +81,8 @@ namespace woden::parser {
 		using lexer::token_type;
 		exprs::expression* result = factor();
 		while (match({ token_type::PLUS, token_type::MINUS })) {
-			result = new exprs::binary(_previous, result, factor());
+			lexer::token token = _previous;
+			result = new exprs::binary(token, result, factor());
 		}
 		return result;
 	}
@@ -64,7 +91,8 @@ namespace woden::parser {
 		using lexer::token_type;
 		exprs::expression* result = unary();
 		while (match({ token_type::STAR, token_type::SLASH })) {
-			result = new exprs::binary(_previous, result, unary());
+			lexer::token token = _previous;
+			result = new exprs::binary(token, result, unary());
 		}
 		return result;
 	}
@@ -72,11 +100,31 @@ namespace woden::parser {
 	exprs::expression* parser::unary() {
 		using lexer::token_type;
 		if (match({ token_type::BANG, token_type::MINUS })) {
-			return new exprs::unary(_previous, unary());
+			lexer::token token = _previous;
+			return new exprs::unary(token, unary());
 		}
-		exprs::expression* result = new exprs::literal(_current);
+		return primary();
+	}
+
+	exprs::expression* parser::primary() {
+		using lexer::token_type;
+		if (check(token_type::IDENTIFIER)) {
+			advance();
+			return new exprs::variable(_previous);
+		}
+
+		if (check(token_type::LEFT_PAREN)) {
+			advance();
+			exprs::expression* result = expression();
+			if (!check(token_type::RIGHT_PAREN)) {
+				throw exception("Expect ')' after expression.", _current.line);
+			}
+			advance();
+			return new exprs::grouping(result);
+		}
+		
 		advance();
-		return result;
+		return new exprs::literal(_previous);
 	}
 
 	bool parser::at_end() const {

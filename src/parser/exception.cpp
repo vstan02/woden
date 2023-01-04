@@ -1,4 +1,4 @@
-/* Woden - A true Object-Oriented programming language
+/* Exception - Woden syntax analyzer exceptions
  * Copyright (C) 2021 Stan Vlad <vstan02@protonmail.com>
  *
  * This file is part of Woden.
@@ -17,20 +17,13 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-#include "lexer/lexer.hpp"
-#include "lexer/token.hpp"
-#include "lexer/base_content.hpp"
-#include "parser/parser.hpp"
-#include "visitor/ast_view.hpp"
+#include "parser/exception.hpp"
 
-#define CODE "!(2 * (4 + variable) == (x < 5 - 12))"
+namespace woden::parser {
+	exception::exception(const char *message, std::size_t line)
+		: std::runtime_error(message), _line(line) {}
 
-extern int main() {
-	using namespace woden;
-	lexer::base_content code(CODE);
-	lexer::lexer lexer(code);
-	parser::parser parser(lexer);
-	visitor::ast_view view(parser);
-	view.print();
-	return 0;
+	std::size_t exception::where() const noexcept {
+		return _line;
+	}
 }
