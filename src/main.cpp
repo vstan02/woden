@@ -17,20 +17,23 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
+#include <iostream>
+
 #include "lexer/lexer.hpp"
 #include "lexer/token.hpp"
 #include "lexer/base_content.hpp"
 #include "parser/parser.hpp"
-#include "visitor/ast_view.hpp"
+#include "visitor/translator.hpp"
 
-#define CODE "!(2 * (4 + variable) == (x < 5 - 12))"
+#define CODE "!(2   *(     4+ \"etfevd\" + variable)==(x<5-12))"
+// The program generates: '!(2 * (4 + "etfevd" + variable) == (x < 5 - 12))'
 
 extern int main() {
 	using namespace woden;
 	lexer::base_content code(CODE);
 	lexer::lexer lexer(code);
 	parser::parser parser(lexer);
-	visitor::ast_view view(parser);
-	view.print();
+	visitor::translator visitor(parser);
+	std::cout << visitor;
 	return 0;
 }

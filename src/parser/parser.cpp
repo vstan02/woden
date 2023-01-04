@@ -17,31 +17,8 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-#include <iostream>
-#include <array>
-
 #include "parser/parser.hpp"
 #include "parser/exception.hpp"
-
-template <std::size_t size>
-static void debug_tokens(const char* target, std::array<char*, size> names, std::array<woden::lexer::token, size> values) {
-	std::cout << "dbg::" << target << '(';
-	for (std::size_t index = 0; index < size; ++index) {
-		std::cout << names[index];
-		if (index < size - 1) {
-			std::cout << ", ";
-		}
-	}
-	std::cout << "): ";
-	for (std::size_t index = 0; index < size; ++index) {
-		std::string content(values[index].start, values[index].size);
-		std::cout << '"' << content << '"';
-		if (index < size - 1) {
-			std::cout << ", ";
-		}
-	}
-	std::cout << '\n';
-}
 
 namespace woden::parser {
 	parser::parser(const lexer::lexer& lexer): _current(), _previous(), _target(lexer) {
