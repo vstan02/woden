@@ -23,15 +23,56 @@
 #include "visitor/visitor.hpp"
 
 namespace woden::visitor {
-	visitor::visitor(const parser::parser& parser): _target(parser), _root(nullptr) {}
+	visitor::visitor(const parser::parser& parser): _target(parser), _stmts() {}
 
 	visitor::~visitor() {
-		if (_root != nullptr) {
-			dealloc_expression(_root);
+		for (parser::stmts::statement* node: _stmts) {
+			dealloc_statement(node);
 		}
 	}
 
+	void visitor::dealloc_statement(parser::stmts::statement* node) {
+		using namespace parser;
+		using type = stmts::statement_type;
+		if (node == nullptr) return;
+		switch (node->type) {
+			case type::EXPRESSION:
+				return dealloc_expression_statement(static_cast<stmts::expression*>(node));
+			case type::PRINT:	
+				return dealloc_print_statement(static_cast<stmts::print*>(node));
+			case type::BLOCK:	
+				return dealloc_block_declaration(static_cast<stmts::block*>(node));
+			case type::PROGRAM:	
+				return dealloc_program_declaration(static_cast<stmts::program*>(node));
+			default:
+				delete node;
+		}
+	}
+
+	void visitor::dealloc_program_declaration(parser::stmts::program* node) {
+		dealloc_statement(node->block);
+		delete node;
+	}
+
+	void visitor::dealloc_block_declaration(parser::stmts::block* block) {
+		for (parser::stmts::statement* node: block->stmts) {
+			dealloc_statement(node);
+		}
+		delete block;
+	}
+
+	void visitor::dealloc_expression_statement(parser::stmts::expression* node) {
+		dealloc_expression(node->target);
+		delete node;
+	}
+
+	void visitor::dealloc_print_statement(parser::stmts::print* node) {
+		dealloc_expression(node->target);
+		delete node;
+	}
+
 	void visitor::dealloc_expression(parser::exprs::expression* node) {
+		if (node == nullptr) return;
 		using namespace parser;
 		using type = exprs::expression_type;
 		switch (node->type) {

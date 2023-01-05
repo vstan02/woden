@@ -17,7 +17,9 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
+#include <fstream>
 #include <iostream>
+#include <exception>
 
 #include "lexer/lexer.hpp"
 #include "lexer/token.hpp"
@@ -25,15 +27,26 @@
 #include "parser/parser.hpp"
 #include "visitor/translator.hpp"
 
-#define CODE "!(2   *(     4+ \"etfevd\" + variable)==(x<5-12))"
-// The program generates: '!(2 * (4 + "etfevd" + variable) == (x < 5 - 12))'
+extern int main(int argc, char** argv) {
+  if (argc < 2) {
+    std::cerr << ">> Error: invalid arguments.\n";
+    std::cerr << ">> Usage: app [file path]\n";
+    return 0;
+  }
 
-extern int main() {
-	using namespace woden;
-	lexer::base_content code(CODE);
-	lexer::lexer lexer(code);
-	parser::parser parser(lexer);
-	visitor::translator visitor(parser);
-	std::cout << visitor;
+  try {
+    std::ifstream in(argv[1]);
+    std::string content((std::istreambuf_iterator<char>(in)), std::istreambuf_iterator<char>());
+
+    using namespace woden;
+  	lexer::base_content code(content.c_str());
+  	lexer::lexer lexer(code);
+    parser::parser parser(lexer);
+
+    visitor::translator visitor(parser);
+    std::cout << visitor;
+  } catch (const std::exception& error) {
+    std::cerr << ">> Error: " << error.what() << '\n';
+  }
 	return 0;
 }

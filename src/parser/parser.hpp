@@ -26,14 +26,14 @@
 
 #include "lexer/lexer.hpp"
 #include "parser/exprs.hpp"
+#include "parser/stmts.hpp"
 
 namespace woden::parser {
 	class parser {
 		public:
 			explicit parser(const lexer::lexer& lexer);
 
-			std::vector<lexer::token> parse();
-			exprs::expression* expression();
+			std::vector<stmts::statement*> parse();
 
 		private:
 			lexer::token _current;
@@ -46,13 +46,22 @@ namespace woden::parser {
 
 			void advance();
 			bool match(std::vector<lexer::token_type> types);
+			void consume(lexer::token_type type, const char* message);
 
-			exprs::expression* primary();
-			exprs::expression* unary();
-			exprs::expression* factor();
-			exprs::expression* term();
-			exprs::expression* comparison();
-			exprs::expression* equality();
+			stmts::statement* statement();
+			stmts::statement* print_statement();
+			stmts::statement* block_statement();
+			stmts::statement* expression_statement();
+			stmts::statement* declaration();
+			stmts::statement* program_declaration();
+
+			exprs::expression* expression();
+			exprs::expression* primary_expression();
+			exprs::expression* unary_expression();
+			exprs::expression* factor_expression();
+			exprs::expression* term_expression();
+			exprs::expression* comparison_expression();
+			exprs::expression* equality_expression();
 	};
 }
 

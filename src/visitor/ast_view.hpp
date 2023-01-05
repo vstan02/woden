@@ -35,6 +35,12 @@ namespace woden::visitor {
 
 			void print_name(const char* category, const char* name);
 
+			void print_statement(parser::stmts::statement* node, std::size_t deep = 0);
+			void print_expression_statement(parser::stmts::expression* node, std::size_t deep = 0);
+			void print_print_statement(parser::stmts::print* node, std::size_t deep = 0);
+			void print_block_declaration(parser::stmts::block* node, std::size_t deep = 0);
+			void print_program_declaration(parser::stmts::program* node, std::size_t deep = 0);
+
 			void print_expression(parser::exprs::expression* node, std::size_t deep = 0);
 			void print_assign_expression(parser::exprs::assign* node, std::size_t deep = 0);
 			void print_binary_expression(parser::exprs::binary* node, std::size_t deep = 0);

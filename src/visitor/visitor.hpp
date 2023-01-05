@@ -20,6 +20,8 @@
 #ifndef WODEN_VISITOR_VISITOR
 #define WODEN_VISITOR_VISITOR
 
+#include <vector>
+
 #include "parser/parser.hpp"
 
 namespace woden::visitor {
@@ -30,9 +32,15 @@ namespace woden::visitor {
 
 		protected:
 			parser::parser _target;
-			parser::exprs::expression* _root;
+			std::vector<parser::stmts::statement*> _stmts;
 
 		private:
+			void dealloc_statement(parser::stmts::statement* node);
+			void dealloc_expression_statement(parser::stmts::expression* node);
+			void dealloc_print_statement(parser::stmts::print* node);
+			void dealloc_block_declaration(parser::stmts::block* node);
+			void dealloc_program_declaration(parser::stmts::program* node);
+
 			void dealloc_expression(parser::exprs::expression* node);
 			void dealloc_assign_expression(parser::exprs::assign* node);
 			void dealloc_binary_expression(parser::exprs::binary* node);

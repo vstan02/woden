@@ -38,7 +38,12 @@ make
 ### Running the program
 If everything went well with the compilation we can run the executable:
 ```
-./bin/woden
+./bin/woden "../examples/hello_world.wn"
+```
+
+You can also save the output to a cpp file:
+```
+./bin/woden "../examples/hello_world.wn" > "../examples/hello_world.cpp"
 ```
 
 ### Installing

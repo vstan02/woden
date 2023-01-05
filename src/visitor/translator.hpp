@@ -35,13 +35,21 @@ namespace woden::visitor {
 			friend std::ostream& operator<<(std::ostream& out, translator& target);
 
 		private:
-			std::ostream& translate_expression(std::ostream& out, parser::exprs::expression* node);
-			std::ostream& translate_assign_expression(std::ostream& out, parser::exprs::assign* node);
-			std::ostream& translate_binary_expression(std::ostream& out, parser::exprs::binary* node);
-			std::ostream& translate_unary_expression(std::ostream& out, parser::exprs::unary* node);
-			std::ostream& translate_literal_expression(std::ostream& out, parser::exprs::literal* node);
-			std::ostream& translate_variable_expression(std::ostream& out, parser::exprs::variable* node);
-			std::ostream& translate_grouping_expression(std::ostream& out, parser::exprs::grouping* node);
+			[[nodiscard]] std::string tab(std::size_t deep = 0) const;
+
+			std::ostream& translate_statement(std::ostream& out, parser::stmts::statement* node, std::size_t deep = 0);
+			std::ostream& translate_expression_statement(std::ostream& out, parser::stmts::expression* node, std::size_t deep = 0);
+			std::ostream& translate_print_statement(std::ostream& out, parser::stmts::print* node, std::size_t deep = 0);
+			std::ostream& translate_block_statement(std::ostream& out, parser::stmts::block* node, std::size_t deep = 0);
+			std::ostream& translate_program_declaration(std::ostream& out, parser::stmts::program* node, std::size_t deep = 0);
+
+			std::ostream& translate_expression(std::ostream& out, parser::exprs::expression* node, std::size_t deep = 0);
+			std::ostream& translate_assign_expression(std::ostream& out, parser::exprs::assign* node, std::size_t deep = 0);
+			std::ostream& translate_binary_expression(std::ostream& out, parser::exprs::binary* node, std::size_t deep = 0);
+			std::ostream& translate_unary_expression(std::ostream& out, parser::exprs::unary* node, std::size_t deep = 0);
+			std::ostream& translate_literal_expression(std::ostream& out, parser::exprs::literal* node, std::size_t deep = 0);
+			std::ostream& translate_variable_expression(std::ostream& out, parser::exprs::variable* node, std::size_t deep = 0);
+			std::ostream& translate_grouping_expression(std::ostream& out, parser::exprs::grouping* node, std::size_t deep = 0);
 	};
 }
 
