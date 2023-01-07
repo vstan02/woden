@@ -62,7 +62,12 @@ namespace woden::parser {
 
 	stmts::statement* parser::print_statement() {
 		advance();
-		exprs::expression* target = expression();
+		std::vector<exprs::expression*> target;
+		target.push_back(expression());
+		while(check(lexer::token_type::COMMA)) {
+			advance();
+			target.push_back(expression());
+		}
 		consume(lexer::token_type::SEMICOLON, "Expect ';' after value.");
 		return new stmts::print(target);
 	}

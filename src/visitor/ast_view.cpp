@@ -99,9 +99,20 @@ namespace woden::visitor {
 	void ast_view::print_print_statement(parser::stmts::print* node, std::size_t deep) {
 		std::cout << termcolor::bright_white << tab(deep);
 		print_name("Statement", "Print");
-		std::cout << termcolor::bright_white << " {\n";
-		print_expression(node->target, deep + 1);
-		std::cout << '\n' << tab(deep) << '}';
+		
+		std::size_t index = 0;
+		std::cout << termcolor::bright_white << " [";
+		for (parser::exprs::expression* expr: node->target) {
+			if (index++ > 0) {
+				std::cout << ',';
+			}
+			print_expression(expr, deep + 1);
+		}
+
+		if (index > 0 && index == _stmts.size()) {
+			std::cout << '\n';
+		}
+		std::cout << tab(deep) << "]";
 	}
 
 	void ast_view::print_expression(parser::exprs::expression *node, std::size_t deep) {

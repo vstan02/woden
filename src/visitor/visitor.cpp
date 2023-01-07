@@ -67,7 +67,9 @@ namespace woden::visitor {
 	}
 
 	void visitor::dealloc_print_statement(parser::stmts::print* node) {
-		dealloc_expression(node->target);
+		for (parser::exprs::expression* expr: node->target) {
+			dealloc_expression(expr);
+		}
 		delete node;
 	}
 

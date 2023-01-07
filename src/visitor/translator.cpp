@@ -65,7 +65,7 @@ namespace woden::visitor {
 	}
 
 	std::ostream& translator::translate_program_declaration(std::ostream& out, parser::stmts::program* node, std::size_t deep) {
-		out << tab(deep) << "#include <iostream>\n\nextern int main()";
+		out << tab(deep) << "#include <iostream>\n\nextern int main() ";
 		return translate_statement(out, node->block, deep);
 	}
 
@@ -74,8 +74,11 @@ namespace woden::visitor {
 	}
 
 	std::ostream& translator::translate_print_statement(std::ostream& out, parser::stmts::print* node, std::size_t deep) {
-		out << tab(deep) << "std::cout << ";
-		return translate_expression(out, node->target) << " << '\\n';\n";
+		out << tab(deep) << "std::cout";
+		for (parser::exprs::expression* expr: node->target) {
+			translate_expression(out << " << ", expr, 0);
+		}
+		return out << " << '\\n';\n";
 	}
 
 	std::ostream& translator::translate_expression(std::ostream& out, parser::exprs::expression* node, std::size_t deep) {

@@ -47,9 +47,9 @@ namespace woden::parser::stmts {
 	};
 
   struct print: statement {
-    exprs::expression* target;
+    std::vector<exprs::expression*> target;
 
-    print(exprs::expression* target)
+    print(std::vector<exprs::expression*> target)
       : statement(statement_type::PRINT), target(target) {}
   };
 
