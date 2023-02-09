@@ -23,32 +23,32 @@
 #include <cstddef>
 
 namespace woden::lexer {
-    class content {
-        public:
-            content(): _line(1) {};
+	class content {
+		public:
+			content(): _line(1) {};
 
-            std::size_t line() const;
+			std::size_t line() const;
 
-            bool is_eof() const;
-            bool is_eol() const;
+			bool is_eof() const;
+			bool is_eol() const;
 
-            void skip_whitespaces();
+			void skip_whitespaces();
 
-            virtual const char* word() const = 0;
-            virtual std::size_t size() const = 0;
+			virtual const char* word() const = 0;
+			virtual std::size_t size() const = 0;
 
-            virtual void start_word() = 0;
-            virtual char advance() = 0;
-            virtual void shift(std::size_t size) = 0;
+			virtual void start_word() = 0;
+			virtual char advance() = 0;
+			virtual void shift(std::size_t size) = 0;
 
-            virtual char operator[](std::size_t index) const = 0;
+			virtual char operator[](std::size_t index) const = 0;
 
-        protected:
-            std::size_t _line;
+		protected:
+			std::size_t _line;
 
-        private:
-            void skip_comments();
-    };
+		private:
+			void skip_comments();
+	};
 }
 
 #endif // WODEN_LEXER_CONTENT

@@ -17,38 +17,36 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
+#include <fstream>
+#include <iostream>
+#include <exception>
+
 #include "lexer/lexer.hpp"
+#include "lexer/token.hpp"
 #include "lexer/base_content.hpp"
 #include "parser/parser.hpp"
+#include "visitor/translator.hpp"
 
-#define CODE \
-    "program {\n" \
-    "// Some Woden code:\n" \
-    "/*\n" \
-    " * test\n" \
-    " * tessst\n" \
-    " */\n" \
-    "\tvar x = \"Hello World!\";\n" \
-    "}"
-
-using namespace woden;
-
-lexer::token_type tokens[] = {
-    lexer::token_type::PROGRAM,
-    lexer::token_type::LEFT_BRACE,
-    lexer::token_type::VAR,
-    lexer::token_type::IDENTIFIER,
-    lexer::token_type::EQUAL,
-    lexer::token_type::STRING,
-    lexer::token_type::SEMICOLON,
-    lexer::token_type::RIGHT_BRACE,
-    lexer::token_type::END
-};
-
-int main() {
-    lexer::base_content code(CODE);
-    lexer::lexer lexer(code);
-    parser::parser parser(lexer);
-    parser.compare(tokens);
+extern int main(int argc, char** argv) {
+  if (argc < 2) {
+    std::cerr << ">> Error: invalid arguments.\n";
+    std::cerr << ">> Usage: app [file path]\n";
     return 0;
+  }
+
+  try {
+    std::ifstream in(argv[1]);
+    std::string content((std::istreambuf_iterator<char>(in)), std::istreambuf_iterator<char>());
+
+    using namespace woden;
+  	lexer::base_content code(content.c_str());
+  	lexer::lexer lexer(code);
+    parser::parser parser(lexer);
+
+    visitor::translator visitor(parser);
+    std::cout << visitor;
+  } catch (const std::exception& error) {
+    std::cerr << ">> Error: " << error.what() << '\n';
+  }
+	return 0;
 }

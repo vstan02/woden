@@ -1,0 +1,3 @@
+program {
+	print "Hello World!";
+}

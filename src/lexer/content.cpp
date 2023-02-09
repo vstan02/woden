@@ -20,49 +20,49 @@
 #include "lexer/content.hpp"
 
 namespace woden::lexer {
-    std::size_t content::line() const {
-        return _line;
-    }
+	std::size_t content::line() const {
+		return _line;
+	}
 
-    bool content::is_eol() const {
-        return (*this)[0] == '\n';
-    }
+	bool content::is_eol() const {
+		return (*this)[0] == '\n';
+	}
 
-    bool content::is_eof() const {
-        return (*this)[0] == '\0';
-    }
+	bool content::is_eof() const {
+		return (*this)[0] == '\0';
+	}
 
-    void content::skip_whitespaces() {
-        while (true) {
-            switch ((*this)[0]) {
-                case ' ':
-                case '\r':
-                case '\t': {
-                    advance();
-                    break;
-                }
-                case '\n': {
-                    ++_line;
-                    advance();
-                    break;
-                }
-                case '/': {
-                    if ((*this)[1] != '/' && (*this)[1] != '*') return;
-                    skip_comments();
-                    break;
-                }
-                default: return;
-            }
-        }
-    }
+	void content::skip_whitespaces() {
+		while (true) {
+			switch ((*this)[0]) {
+				case ' ':
+				case '\r':
+				case '\t': {
+					advance();
+					break;
+				}
+				case '\n': {
+					++_line;
+					advance();
+					break;
+				}
+				case '/': {
+					if ((*this)[1] != '/' && (*this)[1] != '*') return;
+					skip_comments();
+					break;
+				}
+				default: return;
+			}
+		}
+	}
 
-    void content::skip_comments() {
-        if ((*this)[1] == '/') {
-            while ((*this)[1] != '\n') advance();
-        } else {
-            while ((*this)[0] != '*' || (*this)[1] != '/') advance();
-            advance();
-        }
-        advance();
-    }
+	void content::skip_comments() {
+		if ((*this)[1] == '/') {
+			while ((*this)[1] != '\n') advance();
+		} else {
+			while ((*this)[0] != '*' || (*this)[1] != '/') advance();
+			advance();
+		}
+		advance();
+	}
 }

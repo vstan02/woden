@@ -12,20 +12,22 @@
 
 ### Dependencies
 - C++ compiler
-- cmake (>= 3.20)
+- Build system generator: cmake
+- Package manager: conan
 
 These packages can usually be installed through your distributions package manager.
 
 ### Building the project
-To build the project, we first need to create a separate build directory:
+To build the project, we first need to create a separate build directory and `cd` into it:
 ```
 mkdir build
+cd build
 ```
 
-Now that we've created our build directory (assuming it's created in the project root), we can `cd` into it and run `cmake` and pass the parent directory path to it, which is where the `CMakeLists.txt` file is located:
+Now that we've created our build directory (assuming it's created in the project root), we can install all dependencies with `conan` and run `cmake` (we need to pass the parent directory path to them, which is where the `CMakeLists.txt` file is located):
 ```
-cd build
-cmake ..
+conan install .. --build=missing
+cmake .. -DCMAKE_BUILD_TYPE=Release
 ```
 
 Once `cmake` is done generating makefiles, we can build the app by running `make` inside our build directory:
@@ -36,7 +38,12 @@ make
 ### Running the program
 If everything went well with the compilation we can run the executable:
 ```
-./woden
+./bin/woden "../examples/hello_world/hello_world.wn"
+```
+
+You can also save the output to a cpp file:
+```
+./bin/woden "../examples/hello_world/hello_world.wn" > "../examples/hello_world/hello_world.cpp"
 ```
 
 ### Installing
