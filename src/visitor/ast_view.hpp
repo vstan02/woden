@@ -31,8 +31,6 @@ namespace woden::visitor {
 			void print();
 
 		private:
-			[[nodiscard]] std::string tab(std::size_t deep = 0) const;
-
 			void print_name(const char* category, const char* name);
 
 			void print_statement(parser::stmts::statement* node, std::size_t deep = 0);
@@ -48,6 +46,8 @@ namespace woden::visitor {
 			void print_literal_expression(parser::exprs::literal* node, std::size_t deep = 0);
 			void print_variable_expression(parser::exprs::variable* node, std::size_t deep = 0);
 			void print_grouping_expression(parser::exprs::grouping* node, std::size_t deep = 0);
+
+			std::string tab(std::size_t deep = 0) const { return std::string(deep * 2, ' '); }
 	};
 }
 

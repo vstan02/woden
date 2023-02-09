@@ -20,18 +20,14 @@
 #ifndef WODEN_LEXER_EXCEPTION
 #define WODEN_LEXER_EXCEPTION
 
-#include <stdexcept>
+#include "core/exception.hpp"
 
 namespace woden::parser {
-	class exception: public std::runtime_error {
-		public:
-			explicit exception(const char* message, std::size_t line);
-
-			[[nodiscard]] std::size_t where() const noexcept;
-
-		private:
-			std::size_t _line;
-	};
+	class exception: public core::exception {
+    public:
+      explicit exception(const char* message, std::size_t line)
+        : core::exception(message, line) {}
+  };
 }
 
 #endif // WODEN_LEXER_EXCEPTION

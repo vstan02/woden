@@ -35,8 +35,6 @@ namespace woden::visitor {
 			friend std::ostream& operator<<(std::ostream& out, translator& target);
 
 		private:
-			[[nodiscard]] std::string tab(std::size_t deep = 0) const;
-
 			std::ostream& translate_statement(std::ostream& out, parser::stmts::statement* node, std::size_t deep = 0);
 			std::ostream& translate_expression_statement(std::ostream& out, parser::stmts::expression* node, std::size_t deep = 0);
 			std::ostream& translate_print_statement(std::ostream& out, parser::stmts::print* node, std::size_t deep = 0);
@@ -50,6 +48,8 @@ namespace woden::visitor {
 			std::ostream& translate_literal_expression(std::ostream& out, parser::exprs::literal* node, std::size_t deep = 0);
 			std::ostream& translate_variable_expression(std::ostream& out, parser::exprs::variable* node, std::size_t deep = 0);
 			std::ostream& translate_grouping_expression(std::ostream& out, parser::exprs::grouping* node, std::size_t deep = 0);
+			
+			std::string tab(std::size_t deep = 0) const { return std::string(deep * 2, ' '); }
 	};
 }
 

@@ -1,5 +1,5 @@
 /* Lexer - Woden lexical analyzer
- * Copyright (C) 2021 Stan Vlad <vstan02@protonmail.com>
+ * Copyright (C) 2023 Stan Vlad <vstan02@protonmail.com>
  *
  * This file is part of Woden.
  *
@@ -20,7 +20,9 @@
 #ifndef WODEN_LEXER_LEXER
 #define WODEN_LEXER_LEXER
 
-#include <cstddef>
+#include <vector>
+#include <string>
+#include <fstream>
 
 #include "lexer/token.hpp"
 #include "lexer/content.hpp"
@@ -28,26 +30,47 @@
 namespace woden::lexer {
 	class lexer {
 		public:
-			explicit lexer(content& code);
+			explicit lexer(char const* code)
+				: _tokens(), _code(code) {}
 
+			explicit lexer(std::string code)
+				: lexer(code.c_str()) {}
+
+			std::vector<token> scan();
+
+		private:
+			std::vector<token> _tokens;
+			content _code;
+
+		private:
 			token next_token();
-
-		private:
-			content& _code;
-
-		private:
-			[[nodiscard]] bool is_alpha(char) const;
-			[[nodiscard]] bool is_digit(char) const;
-			[[nodiscard]] bool is_alphanum(char) const;
-
 			token_type id_token();
 
-			token make_token(token_type);
 			token make_id();
 			token make_number();
 			token make_string();
 			token choose_token(char, token_type, token_type);
 			token assert_token(char, token_type);
+
+			bool is_digit(char ch) const {
+				return ch >= '0' && ch <= '9';
+			}
+
+			bool is_alphanum(char ch) const {
+				return is_alpha(ch) || is_digit(ch);
+			}
+
+			bool is_alpha(char ch) const {
+				return ch == '_' || (ch >= 'a' && ch <= 'z') || (ch >= 'A' && ch <= 'Z');
+			}
+
+			token make_token(token_type type) const {
+				return token {
+					.type = type,
+					.target = std::string(_code.word(), _code.size()),
+					.line = _code.line()
+				};
+			}
 	};
 }
 

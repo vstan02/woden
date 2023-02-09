@@ -1,5 +1,5 @@
 /* Token - Woden lexical tokens
- * Copyright (C) 2021 Stan Vlad <vstan02@protonmail.com>
+ * Copyright (C) 2023 Stan Vlad <vstan02@protonmail.com>
  *
  * This file is part of Woden.
  *
@@ -20,10 +20,11 @@
 #ifndef WODEN_LEXER_TOKEN
 #define WODEN_LEXER_TOKEN
 
-#include <cstddef>
+#include <string>
 
 namespace woden::lexer {
 	enum token_type {
+		START,
 		LEFT_PAREN,
 		RIGHT_PAREN,
 		LEFT_BRACE,
@@ -72,8 +73,7 @@ namespace woden::lexer {
 
 	struct token {
 		token_type type;
-		const char* start;
-		std::size_t size;
+		std::string target;
 		std::size_t line;
 	};
 }

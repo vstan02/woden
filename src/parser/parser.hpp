@@ -20,7 +20,6 @@
 #ifndef WODEN_PARSER_PARSER
 #define WODEN_PARSER_PARSER
 
-#include <cstddef>
 #include <vector>
 #include <memory>
 
@@ -31,20 +30,18 @@
 namespace woden::parser {
 	class parser {
 		public:
-			explicit parser(const lexer::lexer& lexer);
+			explicit parser(const lexer::lexer& lexer)
+				: _target(lexer), _index(0), _tokens(), _ast() {}
 
 			std::vector<stmts::statement*> parse();
 
 		private:
-			lexer::token _current;
-			lexer::token _previous;
 			lexer::lexer _target;
+			std::size_t _index;
+			std::vector<lexer::token> _tokens;
+			std::vector<stmts::statement*> _ast;
 
 		private:
-			[[nodiscard]] bool at_end() const;
-			[[nodiscard]] bool check(lexer::token_type type) const;
-
-			void advance();
 			bool match(std::vector<lexer::token_type> types);
 			void consume(lexer::token_type type, const char* message);
 
@@ -52,16 +49,28 @@ namespace woden::parser {
 			stmts::statement* print_statement();
 			stmts::statement* block_statement();
 			stmts::statement* expression_statement();
-			stmts::statement* declaration();
 			stmts::statement* program_declaration();
 
-			exprs::expression* expression();
 			exprs::expression* primary_expression();
 			exprs::expression* unary_expression();
 			exprs::expression* factor_expression();
 			exprs::expression* term_expression();
 			exprs::expression* comparison_expression();
 			exprs::expression* equality_expression();
+
+			stmts::statement* declaration() { return program_declaration(); }
+
+			exprs::expression* expression() { return equality_expression(); }
+
+			void advance() { !at_end() && (++_index); }
+
+			bool at_end() const {
+				return _tokens[_index].type == lexer::token_type::END;
+			}
+			
+			bool check(lexer::token_type type) const {
+				return !at_end() && _tokens[_index].type == type;
+			}
 	};
 }
 

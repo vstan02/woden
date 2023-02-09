@@ -1,5 +1,5 @@
 /* Content - Content for the lexical analyzer
- * Copyright (C) 2021 Stan Vlad <vstan02@protonmail.com>
+ * Copyright (C) 2023 Stan Vlad <vstan02@protonmail.com>
  *
  * This file is part of Woden.
  *
@@ -25,26 +25,29 @@
 namespace woden::lexer {
 	class content {
 		public:
-			content(): _line(1) {};
-
-			std::size_t line() const;
-
-			bool is_eof() const;
-			bool is_eol() const;
+			content(char const* target)
+				: _line(1), _start(target), _current(target) {}
 
 			void skip_whitespaces();
 
-			virtual const char* word() const = 0;
-			virtual std::size_t size() const = 0;
+			std::size_t line() const { return _line; }
 
-			virtual void start_word() = 0;
-			virtual char advance() = 0;
-			virtual void shift(std::size_t size) = 0;
+			bool is_eof() const { return (*this)[0] == '\0'; }
+			bool is_eol() const { return (*this)[0] == '\n'; }
 
-			virtual char operator[](std::size_t index) const = 0;
+			char const* word() const { return _start; }
+			std::size_t size() const { return _current - _start; }
 
-		protected:
+			char advance() { return (++_current)[-1]; }
+			void start_word() { _start = _current; }
+
+			char operator[](std::size_t index) const { return _current[index]; }
+			void operator>>(std::size_t size) { _start += size; }
+
+		private:
 			std::size_t _line;
+			char const* _start;
+			char const* _current;
 
 		private:
 			void skip_comments();
