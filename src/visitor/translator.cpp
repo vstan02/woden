@@ -105,18 +105,17 @@ namespace woden::visitor {
 	}
 
 	std::ostream& translator::translate_assign_expression(std::ostream& out, parser::exprs::assign* node, std::size_t deep) {
-		out << tab(deep) << std::string(node->name.start, node->name.size) << " = "; 
+		out << tab(deep) << node->name.target << " = "; 
 		return translate_expression(out, node->value, deep);
 	}
 
 	std::ostream& translator::translate_binary_expression(std::ostream& out, parser::exprs::binary* node, std::size_t deep) {
-		translate_expression(out << tab(deep), node->left) << ' ' << std::string(node->operation.start, node->operation.size) << ' ';
+		translate_expression(out << tab(deep), node->left) << ' ' << node->operation.target << ' ';
 		return translate_expression(out, node->right);
 	}
 
 	std::ostream& translator::translate_unary_expression(std::ostream& out, parser::exprs::unary* node, std::size_t deep) {
-		out << tab(deep) << std::string(node->operation.start, node->operation.size);
-		return translate_expression(out, node->target);
+		return translate_expression(out << tab(deep) << node->operation.target, node->target);
 	}
 
 	std::ostream& translator::translate_literal_expression(std::ostream& out, parser::exprs::literal* node, std::size_t deep) {
@@ -131,23 +130,19 @@ namespace woden::visitor {
 			case type::FALSE:
 				return out << "false";
 			case type::NUMBER:
-				return out << std::string(node->value.start, node->value.size);
+				return out << node->value.target;
 			case type::STRING:
-				return out << '"' << std::string(node->value.start, node->value.size) << '"';
+				return out << '"' << node->value.target << '"';
 			default: 
 				return out;
 		}
 	}
 
 	std::ostream& translator::translate_variable_expression(std::ostream& out, parser::exprs::variable* node, std::size_t deep) {
-		return out << tab(deep) << std::string(node->name.start, node->name.size);
+		return out << tab(deep) << node->name.target;
 	}
 
 	std::ostream& translator::translate_grouping_expression(std::ostream& out, parser::exprs::grouping* node, std::size_t deep) {
 		return translate_expression(out << tab(deep) << '(', node->target) << ')';
-	}
-
-	std::string translator::tab(std::size_t deep) const {
-		return std::string(deep * 2, ' ');
 	}
 }

@@ -1,4 +1,4 @@
-/* Base Content - String content for the lexical analyzer
+/* Exception - Woden exceptions
  * Copyright (C) 2021 Stan Vlad <vstan02@protonmail.com>
  *
  * This file is part of Woden.
@@ -17,36 +17,22 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-#include <cstring>
-#include <cstdlib>
+#ifndef WODEN_CORE_EXCEPTION
+#define WODEN_CORE_EXCEPTION
 
-#include "lexer/base_content.hpp"
+#include <stdexcept>
 
-namespace woden::lexer {
-	base_content::base_content(const char *target)
-		: content(), _start(target), _current(target) {}
+namespace woden::core {
+	class exception: public std::runtime_error {
+		public:
+			explicit exception(const char* message, std::size_t line)
+				: std::runtime_error(message), _line(line) {}
 
-	std::size_t base_content::size() const {
-		return _current - _start;
-	}
+			std::size_t where() const noexcept { return _line; }
 
-	const char* base_content::word() const {
-		return _start;
-	}
-
-	char base_content::operator[](std::size_t index) const {
-		return _current[index];
-	}
-
-	char base_content::advance() {
-		return (++_current)[-1];
-	}
-
-	void base_content::shift(std::size_t size) {
-		_start += size;
-	}
-
-	void base_content::start_word() {
-		_start = _current;
-	}
+		private:
+			std::size_t _line;
+	};
 }
+
+#endif // WODEN_CORE_EXCEPTION

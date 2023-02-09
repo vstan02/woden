@@ -21,32 +21,34 @@
 #include <iostream>
 #include <exception>
 
+#include "core/exception.hpp"
 #include "lexer/lexer.hpp"
 #include "lexer/token.hpp"
-#include "lexer/base_content.hpp"
 #include "parser/parser.hpp"
 #include "visitor/translator.hpp"
 
 extern int main(int argc, char** argv) {
   if (argc < 2) {
-    std::cerr << ">> Error: invalid arguments.\n";
-    std::cerr << ">> Usage: app [file path]\n";
+    std::cerr << "[Error]: invalid arguments.\n";
+    std::cerr << "==> usage: app [file path]\n";
     return 0;
   }
 
+  using namespace woden;
   try {
-    std::ifstream in(argv[1]);
-    std::string content((std::istreambuf_iterator<char>(in)), std::istreambuf_iterator<char>());
+    std::ifstream file(argv[1]);
+    std::string code((std::istreambuf_iterator<char>(file)), std::istreambuf_iterator<char>());
 
-    using namespace woden;
-  	lexer::base_content code(content.c_str());
-  	lexer::lexer lexer(code);
+  	lexer::lexer lexer(code.c_str());
     parser::parser parser(lexer);
 
     visitor::translator visitor(parser);
     std::cout << visitor;
+  } catch(const core::exception& error) {
+    std::cerr << "[Error]: " << error.what() << '\n';
+    std::cerr << "==> at line: " << error.where() << '\n';
   } catch (const std::exception& error) {
-    std::cerr << ">> Error: " << error.what() << '\n';
+    std::cerr << "[Error]: " << error.what() << '\n';
   }
 	return 0;
 }

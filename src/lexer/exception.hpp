@@ -1,5 +1,5 @@
 /* Exception - Woden lexical analyzer exceptions
- * Copyright (C) 2021 Stan Vlad <vstan02@protonmail.com>
+ * Copyright (C) 2023 Stan Vlad <vstan02@protonmail.com>
  *
  * This file is part of Woden.
  *
@@ -20,29 +20,25 @@
 #ifndef WODEN_LEXER_EXCEPTION
 #define WODEN_LEXER_EXCEPTION
 
-#include <stdexcept>
+#include "core/exception.hpp"
 
 namespace woden::lexer {
-	class exception: public std::runtime_error {
+	class exception: public core::exception {
 		public:
-			explicit exception(const char* message, std::size_t line);
-
-			[[nodiscard]] std::size_t where() const noexcept;
-
-		private:
-			std::size_t _line;
+			explicit exception(const char* message, std::size_t line)
+				: core::exception(message, line) {}
 	};
 
-	class unexpected_character_error: public exception {
+	class unexpected_character: public exception {
 		public:
-			explicit unexpected_character_error(std::size_t line)
-			: exception("Unexpected character.", line) {}
+			explicit unexpected_character(std::size_t line)
+				: exception("Unexpected character.", line) {}
 	};
 
-	class unterminated_string_error: public exception {
+	class unterminated_string: public exception {
 		public:
-			explicit unterminated_string_error(std::size_t line)
-			: exception("Unterminated string.", line) {}
+			explicit unterminated_string(std::size_t line)
+				: exception("Unterminated string.", line) {}
 	};
 }
 
